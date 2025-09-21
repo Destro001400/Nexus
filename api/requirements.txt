@@ -1,0 +1,5 @@
+# Dependências para a API do Nexus
+
+fastapi
+uvicorn[standard]
+pydantic
