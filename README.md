@@ -59,9 +59,9 @@ Nexus é um modelo de linguagem grande (LLM) pensado para **pesquisa acadêmica*
 
 | Versão | Objetivo principal | Status | Notas |
 |--------|--------------------|--------:|-------|
-| **v0.1 (Alpha)** | Texto básico em PT; funcionalidades de pesquisa simples | ✅ Concluído | MVP para testar prompts e fluxo básico |
+| **v0.1 (Alpha)** | Texto básico em PT; funcionalidades de pesquisa simples | 🔄 Em progresso | MVP para testar prompts e fluxo básico |
 | **v0.2 (Beta)** | Adição de EN/ES; módulo música assistida; prompts avançados | 🔄 Em progresso | Testes com datasets específicos de música e textos |
-| **v1.0 (Release)** | Versão Pro com múltiplos módulos; otimizações de performance | 🔜 Planejado | Preparar infra para modelos maiores |
+| **v1.0 (Release)** | Versão Pro com múltiplos módulos; otimizações de performance | 🔜 Planejado | Preparar infraestrutura para modelos maiores |
 | **v2.0+** | Plugins comunitários; visualizações interativas; custom profiles | 🔮 Futuro | Roadmap aberto para contribuições da comunidade |
 
 ---
@@ -97,7 +97,7 @@ Letra (refrão): 'No compasso do riso, teu braço é porto, na madrugada a conve
 
 ---
 
-### 📥 Como Rodar (MVP)
+## 📥 Como Rodar (MVP)
 
 > Esses passos são um ponto de partida. Ajuste conforme a estrutura do teu repositório.
 
@@ -135,7 +135,7 @@ Obs.: substitua run_nexus.py e flags pelo script/CLI real do projeto quando exis
 
 ---
 
-### 🤝 Contribuições
+## 🤝 Contribuições
 
 Contribuições são bem-vindas! Sugestões de ficheiros a incluir:
 
@@ -163,7 +163,7 @@ Fluxo sugerido:
 
 ---
 
-### ⚖️ Licença & Ética
+## ⚖️ Licença & Ética
 
 Licença sugerida: MIT (arquivo LICENSE no repo).
 
@@ -180,7 +180,7 @@ Mitigar vieses e promover respostas seguras/responsáveis.
 
 ---
 
-### 📎 Itens Recomendados (arquivos do repo)
+## 📎 Itens Recomendados (arquivos do repo)
 
 requirements.txt — dependências Python
 
@@ -196,6 +196,7 @@ CONTRIBUTING.md, CODE_OF_CONDUCT.md
 
 ---
 
-### ✉️ Contato
+## ✉️ Contato
 
-Criado por Destro — https://github.com/Destro001400
+Criado por Destro — https://github.com/Destro001400 
+Em desenvolvimento ***solo**

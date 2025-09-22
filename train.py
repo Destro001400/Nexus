@@ -32,6 +32,12 @@ BATCH_SIZE = 32
 SEQ_LEN = 128
 TRAIN_SPLIT_RATIO = 0.9 # 90% para treino, 10% para validação
 
+# Novas configurações para otimização
+MAX_GRAD_NORM = 1.0 # Limite para o Gradient Clipping
+LR_SCHEDULER_PATIENCE = 2 # Paciência para o Learning Rate Scheduler (reduz LR se val_loss não melhorar por 2 épocas)
+LR_SCHEDULER_FACTOR = 0.5 # Fator de redução do Learning Rate
+EARLY_STOPPING_PATIENCE = 3 # Paciência para Early Stopping (para se val_loss não melhorar por 3 épocas)
+
 # -----------------------------------------------------
 # 2. FUNÇÕES DE SALVAR/CARREGAR MODELO
 # -----------------------------------------------------
@@ -86,7 +92,14 @@ criterion = nn.CrossEntropyLoss()
 # AdamW é uma versão melhorada do Adam, muito popular hoje em dia.
 optimizer = optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 
-# (Item 28) O Learning Rate Scheduler seria definido aqui, mas vamos manter simples por enquanto.
+# (Item 28) O Learning Rate Scheduler
+lr_scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+    optimizer,
+    mode='min', # Monitora a perda de validação (min)
+    factor=LR_SCHEDULER_FACTOR,
+    patience=LR_SCHEDULER_PATIENCE,
+    verbose=True
+)
 
 print(f"Modelo movido para o dispositivo: {device}")
 print(f"Número de parâmetros: {sum(p.numel() for p in model.parameters() if p.requires_grad):,}")
@@ -98,6 +111,7 @@ print(f"Número de parâmetros: {sum(p.numel() for p in model.parameters() if p.
 print("Iniciando loop de treinamento...")
 
 best_val_loss = float('inf') # Inicializa com infinito para garantir que o primeiro modelo seja salvo
+epochs_no_improve = 0 # Contador para Early Stopping
 
 for epoch in range(N_EPOCHS):
     # --- Fase de Treinamento ---
@@ -113,8 +127,10 @@ for epoch in range(N_EPOCHS):
         logits = model(inputs, tgt_mask)
         loss = criterion(logits.view(-1, VOCAB_SIZE), targets.view(-1))
         loss.backward()
-        # (Item 29) O Gradient Clipping seria aplicado aqui, antes do optimizer.step()
-        # torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+
+        # (Item 29) Gradient Clipping
+        torch.nn.utils.clip_grad_norm_(model.parameters(), MAX_GRAD_NORM)
+
         optimizer.step()
 
         total_train_loss += loss.item()
@@ -141,11 +157,23 @@ for epoch in range(N_EPOCHS):
     avg_val_loss = total_val_loss / len(val_dataloader)
     print(f"Época [{epoch+1}/{N_EPOCHS}], Média da Loss de Validação: {avg_val_loss:.4f}")
 
+    # Step the learning rate scheduler
+    lr_scheduler.step(avg_val_loss)
+
     # Salva o modelo se a loss de validação melhorar
     if avg_val_loss < best_val_loss:
         best_val_loss = avg_val_loss
         save_model(model, MODEL_SAVE_PATH)
         print(f"Melhor modelo salvo com Loss de Validação: {best_val_loss:.4f}")
+        epochs_no_improve = 0 # Reseta o contador de paciência
+    else:
+        epochs_no_improve += 1
+        print(f"Validação Loss não melhorou por {epochs_no_improve} época(s).")
+
+    # Early Stopping
+    if epochs_no_improve >= EARLY_STOPPING_PATIENCE:
+        print(f"Early stopping at epoch {epoch+1} as validation loss did not improve for {EARLY_STOPPING_PATIENCE} consecutive epochs.")
+        break
 
 print("Treinamento concluído!")
 

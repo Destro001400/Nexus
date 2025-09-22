@@ -1,0 +1,5 @@
+torch
+tokenizers
+requests
+beautifulsoup4
+lyricsgenius 

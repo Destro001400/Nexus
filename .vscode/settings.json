@@ -1,3 +1,8 @@
 {
-    "python.analysis.typeCheckingMode": "off"
+    "python.analysis.typeCheckingMode": "off",
+    "markdown.validate.enabled": true,
+    "markdown.validate.ignoredLinks": [
+        "#-licença--ética",
+        "#-contato"
+    ]
 }
