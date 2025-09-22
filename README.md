@@ -6,7 +6,7 @@ Desenvolver um **Large Language Model (LLM)** chamado **Nexus** focado em **pesq
 ### 1. Características Fundamentais
 - **Nome**: Nexus
 - **Tipo**: Large Language Model (LLM)
-- **Arquitetura**: [Transformer, GPT-style, etc.]
+- **Arquitetura**: GPT-style
 - **Filosofia**: Inteligência adaptável, respostas precisas e interação natural
 
 ### 2. Capacidades Principais do Nexus
