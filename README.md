@@ -106,30 +106,28 @@ Letra (refrão): 'No compasso do riso, teu braço é porto, na madrugada a conve
 1. Clone o repositório:
 
 
-''' text
 git clone https://github.com/Destro001400/Nexus.git
 cd Nexus
-'''
+
 2. Crie um ambiente virtual (recomendado):
 
 
-''' text
 python -m venv .venv
 source .venv/bin/activate   # Linux / Mac
 .venv\Scripts\activate      # Windows
-'''
+
 3. Instale dependências:
 
 
-''' text
+
 pip install -r requirements.txt
-'''
+
 4. Rodar o protótipo local (exemplo):
 
-''' text
+
 
 python run_nexus.py --model nexus-7b --mode texto
-'''
+
 Obs.: substitua run_nexus.py e flags pelo script/CLI real do projeto quando existirem.
 
 
@@ -199,4 +197,3 @@ CONTRIBUTING.md, CODE_OF_CONDUCT.md
 ### ✉️ Contato
 
 Criado por Destro — https://github.com/Destro001400
-Quer que eu gere também: CONTRIBUTING.md, templates de PR/Issue, ou um run_nexus.py de exemplo? Só fala que eu faço na hora 💪
