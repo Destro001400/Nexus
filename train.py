@@ -7,7 +7,7 @@ from nexus_core.model import NexusModel
 from nexus_core.dataset import NexusDataset, collate_fn
 
 # Caminhos para o dataset e tokenizador
-TEXT_FILE = "C:\Users\Casa\Documents\Nexus\training_data.txt"
+TEXT_FILE = "C:\\Users\\Casa\\Documents\\Nexus\\training_data.txt"
 TOKENIZER_DIR = "C:\\Users\\Casa\\Documents\\Nexus\\nexus_tokenizer"
 MODEL_SAVE_PATH = "C:\\Users\\Casa\\Documents\\Nexus\\Nexus_models\\nexus_model.pth" # Caminho para salvar o modelo
 
@@ -97,8 +97,7 @@ lr_scheduler = optim.lr_scheduler.ReduceLROnPlateau(
     optimizer,
     mode='min', # Monitora a perda de validação (min)
     factor=LR_SCHEDULER_FACTOR,
-    patience=LR_SCHEDULER_PATIENCE,
-    verbose=True
+    patience=LR_SCHEDULER_PATIENCE
 )
 
 print(f"Modelo movido para o dispositivo: {device}")
