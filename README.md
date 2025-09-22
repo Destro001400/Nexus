@@ -77,7 +77,7 @@ Resposta esperada:
 "Resumo: O artigo aborda sistemas adaptativos que personalizam trajetórias de aprendizagem...
 Metodologia sugerida: experimento controlado com amostra aleatória, pré-teste e pós-teste..."
 
-###✍️ Criação de Texto
+### ✍️ Criação de Texto
 
 Prompt:
 "Escreva um poema curto sobre uma cidade futurista à noite."
@@ -85,7 +85,7 @@ Prompt:
 Resposta esperada:
 "Luzes neon riscam o céu, ruas suspiram bits — e a chuva canta memórias que ninguém mais lembra..."
 
-###🎵 Música
+### 🎵 Música
 
 Prompt:
 "Crie uma progressão de acordes e letra curta em estilo jazz sobre amizade."
@@ -97,7 +97,7 @@ Letra (refrão): 'No compasso do riso, teu braço é porto, na madrugada a conve
 
 ---
 
-###📥 Como Rodar (MVP)
+### 📥 Como Rodar (MVP)
 
 > Esses passos são um ponto de partida. Ajuste conforme a estrutura do teu repositório.
 
@@ -106,14 +106,14 @@ Letra (refrão): 'No compasso do riso, teu braço é porto, na madrugada a conve
 1. Clone o repositório:
 
 
-'''text
+''' text
 git clone https://github.com/Destro001400/Nexus.git
 cd Nexus
 '''
 2. Crie um ambiente virtual (recomendado):
 
 
-'''text
+''' text
 python -m venv .venv
 source .venv/bin/activate   # Linux / Mac
 .venv\Scripts\activate      # Windows
@@ -121,12 +121,12 @@ source .venv/bin/activate   # Linux / Mac
 3. Instale dependências:
 
 
-'''text
+''' text
 pip install -r requirements.txt
 '''
 4. Rodar o protótipo local (exemplo):
 
-'''text
+''' text
 
 python run_nexus.py --model nexus-7b --mode texto
 '''
@@ -135,7 +135,7 @@ Obs.: substitua run_nexus.py e flags pelo script/CLI real do projeto quando exis
 
 ---
 
-###🤝 Contribuições
+### 🤝 Contribuições
 
 Contribuições são bem-vindas! Sugestões de ficheiros a incluir:
 
@@ -163,7 +163,7 @@ Fluxo sugerido:
 
 ---
 
-###⚖️ Licença & Ética
+### ⚖️ Licença & Ética
 
 Licença sugerida: MIT (arquivo LICENSE no repo).
 
@@ -180,7 +180,7 @@ Mitigar vieses e promover respostas seguras/responsáveis.
 
 ---
 
-###📎 Itens Recomendados (arquivos do repo)
+### 📎 Itens Recomendados (arquivos do repo)
 
 requirements.txt — dependências Python
 
@@ -196,7 +196,7 @@ CONTRIBUTING.md, CODE_OF_CONDUCT.md
 
 ---
 
-###✉️ Contato
+### ✉️ Contato
 
 Criado por Destro — https://github.com/Destro001400
 Quer que eu gere também: CONTRIBUTING.md, templates de PR/Issue, ou um run_nexus.py de exemplo? Só fala que eu faço na hora 💪
