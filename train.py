@@ -7,7 +7,7 @@ from nexus_core.model import NexusModel
 from nexus_core.dataset import NexusDataset, collate_fn
 
 # Caminhos para o dataset e tokenizador
-TEXT_FILE = "C:\\Users\\Casa\\Documents\\Nexus\\data.txt"
+TEXT_FILE = "C:\Users\Casa\Documents\Nexus\training_data.txt"
 TOKENIZER_DIR = "C:\\Users\\Casa\\Documents\\Nexus\\nexus_tokenizer"
 MODEL_SAVE_PATH = "C:\\Users\\Casa\\Documents\\Nexus\\Nexus_models\\nexus_model.pth" # Caminho para salvar o modelo
 
