@@ -9,7 +9,7 @@ from nexus_core.dataset import NexusDataset, collate_fn
 # Caminhos para o dataset e tokenizador
 TEXT_FILE = "C:\\Users\\Casa\\Documents\\Nexus\\data.txt"
 TOKENIZER_DIR = "C:\\Users\\Casa\\Documents\\Nexus\\nexus_tokenizer"
-
+MODEL_SAVE_PATH = "C:\\Users\\Casa\\Documents\\Nexus\\Nexus_models\\nexus_model.pth" # Caminho para salvar o modelo
 
 # -----------------------------------------------------
 # 1. HIPERPARÂMETROS E CONFIGURAÇÕES DO MODELO
@@ -30,20 +30,40 @@ LEARNING_RATE = 1e-4
 N_EPOCHS = 10
 BATCH_SIZE = 32
 SEQ_LEN = 128
+TRAIN_SPLIT_RATIO = 0.9 # 90% para treino, 10% para validação
 
 # -----------------------------------------------------
-# 2. INICIALIZAÇÃO DOS COMPONENTES
+# 2. FUNÇÕES DE SALVAR/CARREGAR MODELO
+# -----------------------------------------------------
+def save_model(model, path):
+    torch.save(model.state_dict(), path)
+    print(f"Modelo salvo em {path}")
+
+def load_model(model, path, device):
+    model.load_state_dict(torch.load(path, map_location=device))
+    print(f"Modelo carregado de {path}")
+    return model
+
+# -----------------------------------------------------
+# 3. INICIALIZAÇÃO DOS COMPONENTES
 # -----------------------------------------------------
 
 # Define o dispositivo (GPU se disponível, senão CPU)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Inicializa o Dataset e DataLoader
-print("Inicializando o Dataset...")
-dataset = NexusDataset(TEXT_FILE, TOKENIZER_DIR, SEQ_LEN)
-VOCAB_SIZE = dataset.vocab_size # Atualiza VOCAB_SIZE dinamicamente com base no vocabulário do tokenizador
-dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, collate_fn=collate_fn)
-print(f"Dataset criado com {len(dataset)} sequências. Tamanho do vocabulário: {VOCAB_SIZE}")
+print("Inicializando o Dataset de Treino e Validação...")
+train_dataset = NexusDataset(TEXT_FILE, TOKENIZER_DIR, SEQ_LEN, split='train', split_ratio=TRAIN_SPLIT_RATIO)
+val_dataset = NexusDataset(TEXT_FILE, TOKENIZER_DIR, SEQ_LEN, split='val', split_ratio=TRAIN_SPLIT_RATIO)
+
+VOCAB_SIZE = train_dataset.vocab_size # Atualiza VOCAB_SIZE dinamicamente com base no vocabulário do tokenizador
+train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, collate_fn=collate_fn)
+val_dataloader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, collate_fn=collate_fn)
+
+print(f"Dataset de Treino criado com {len(train_dataset)} sequências.")
+print(f"Dataset de Validação criado com {len(val_dataset)} sequências.")
+print(f"Tamanho do vocabulário: {VOCAB_SIZE}")
+
 
 # Inicializa o nosso modelo Nexus
 print("Inicializando o modelo Nexus...")
@@ -72,49 +92,60 @@ print(f"Modelo movido para o dispositivo: {device}")
 print(f"Número de parâmetros: {sum(p.numel() for p in model.parameters() if p.requires_grad):,}")
 
 # -----------------------------------------------------
-# 3. LOOP DE TREINAMENTO
+# 4. LOOP DE TREINAMENTO
 # -----------------------------------------------------
 
 print("Iniciando loop de treinamento...")
 
-# Coloca o modelo em modo de treinamento
-model.train()
+best_val_loss = float('inf') # Inicializa com infinito para garantir que o primeiro modelo seja salvo
 
 for epoch in range(N_EPOCHS):
-    total_loss = 0
-    for batch_idx, (inputs, targets) in enumerate(dataloader):
+    # --- Fase de Treinamento ---
+    model.train() # Coloca o modelo em modo de treinamento
+    total_train_loss = 0
+    for batch_idx, (inputs, targets) in enumerate(train_dataloader): # Usa train_dataloader
         inputs, targets = inputs.to(device), targets.to(device)
 
         # Cria uma máscara causal (look-ahead mask)
-        # Garante que o modelo não veja tokens futuros
         tgt_mask = torch.triu(torch.ones(SEQ_LEN, SEQ_LEN), diagonal=1).bool().to(device)
 
-        # 1. Zera os gradientes da iteração anterior
         optimizer.zero_grad()
-
-        # 2. Forward pass: Passa os dados pelo modelo
         logits = model(inputs, tgt_mask)
-
-        # 3. Calcula a Loss
-        # O Pytorch espera [Batch, Classes, SeqLen], então precisamos reformatar os tensores.
         loss = criterion(logits.view(-1, VOCAB_SIZE), targets.view(-1))
-
-        # 4. Backward pass: Calcula os gradientes da loss em relação aos parâmetros
         loss.backward()
-
         # (Item 29) O Gradient Clipping seria aplicado aqui, antes do optimizer.step()
         # torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-
-        # 5. Atualiza os pesos do modelo
         optimizer.step()
 
-        total_loss += loss.item()
+        total_train_loss += loss.item()
 
         if (batch_idx + 1) % 10 == 0:
-            print(f"Época [{epoch+1}/{N_EPOCHS}], Batch [{batch_idx+1}/{len(dataloader)}], Loss: {loss.item():.4f}")
+            print(f"Época [{epoch+1}/{N_EPOCHS}], Batch [{batch_idx+1}/{len(train_dataloader)}], Loss Treino: {loss.item():.4f}")
 
-    avg_loss = total_loss / len(dataloader)
-    print(f"Época [{epoch+1}/{N_EPOCHS}], Média da Loss: {avg_loss:.4f}")
+    avg_train_loss = total_train_loss / len(train_dataloader)
+    print(f"Época [{epoch+1}/{N_EPOCHS}], Média da Loss de Treino: {avg_train_loss:.4f}")
+
+    # --- Fase de Validação ---
+    model.eval() # Coloca o modelo em modo de avaliação
+    total_val_loss = 0
+    with torch.no_grad(): # Desativa o cálculo de gradientes para validação
+        for batch_idx, (inputs, targets) in enumerate(val_dataloader): # Usa val_dataloader
+            inputs, targets = inputs.to(device), targets.to(device)
+
+            tgt_mask = torch.triu(torch.ones(SEQ_LEN, SEQ_LEN), diagonal=1).bool().to(device)
+
+            logits = model(inputs, tgt_mask)
+            loss = criterion(logits.view(-1, VOCAB_SIZE), targets.view(-1))
+            total_val_loss += loss.item()
+
+    avg_val_loss = total_val_loss / len(val_dataloader)
+    print(f"Época [{epoch+1}/{N_EPOCHS}], Média da Loss de Validação: {avg_val_loss:.4f}")
+
+    # Salva o modelo se a loss de validação melhorar
+    if avg_val_loss < best_val_loss:
+        best_val_loss = avg_val_loss
+        save_model(model, MODEL_SAVE_PATH)
+        print(f"Melhor modelo salvo com Loss de Validação: {best_val_loss:.4f}")
 
 print("Treinamento concluído!")
 

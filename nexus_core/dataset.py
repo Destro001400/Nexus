@@ -8,7 +8,7 @@ class NexusDataset(Dataset):
     Um Dataset customizado para o Nexus, que carrega texto, tokeniza e prepara
     sequências para o treinamento de um modelo de linguagem.
     """
-    def __init__(self, text_file, tokenizer_dir, seq_len):
+    def __init__(self, text_file, tokenizer_dir, seq_len, split='train', split_ratio=0.9):
         """
         Inicializa o Dataset.
 
@@ -16,9 +16,13 @@ class NexusDataset(Dataset):
             text_file (str): Caminho para o arquivo de texto bruto.
             tokenizer_dir (str): Caminho para o diretório onde o tokenizador está salvo.
             seq_len (int): O comprimento máximo das sequências de entrada/saída.
+            split (str): 'train' ou 'val' para indicar qual parte do dataset usar.
+            split_ratio (float): A proporção para o conjunto de treinamento (e.g., 0.9 para 90% treino, 10% val).
         """
         super().__init__()
         self.seq_len = seq_len
+        self.split = split
+        self.split_ratio = split_ratio
 
         # 1. Carrega o tokenizador treinado
         self.tokenizer = ByteLevelBPETokenizer.from_file(
@@ -32,18 +36,31 @@ class NexusDataset(Dataset):
             text = f.read()
 
         # 3. Tokeniza o texto completo
-        # O encode_batch é mais eficiente para tokenizar grandes volumes de texto.
         encoded_text = self.tokenizer.encode(text)
-        self.token_ids = encoded_text.ids
+        all_token_ids = encoded_text.ids
 
-        # Calcula o número total de sequências que podemos extrair
-        # Cada sequência de entrada terá seq_len tokens, e a sequência alvo terá seq_len tokens.
-        # O último token da entrada é o penúltimo token do texto, e o último token do alvo é o último token do texto.
-        self.num_sequences = len(self.token_ids) - seq_len
+        # Calcula o número total de sequências que podemos extrair do texto completo
+        total_possible_sequences = len(all_token_ids) - seq_len
+
+        if total_possible_sequences <= 0:
+            raise ValueError(f"O texto é muito curto para o seq_len={seq_len}. "
+                             f"Tamanho do texto tokenizado: {len(all_token_ids)}")
+
+        # Divide os dados em treino e validação
+        split_idx = int(total_possible_sequences * split_ratio)
+
+        if split == 'train':
+            self.token_ids = all_token_ids[:split_idx + seq_len] # +seq_len para garantir que a última sequência de treino seja completa
+            self.num_sequences = split_idx
+        elif split == 'val':
+            self.token_ids = all_token_ids[split_idx:]
+            self.num_sequences = total_possible_sequences - split_idx
+        else:
+            raise ValueError("O parâmetro 'split' deve ser 'train' ou 'val'.")
 
         if self.num_sequences <= 0:
-            raise ValueError(f"O texto é muito curto para o seq_len={seq_len}. "
-                             f"Tamanho do texto tokenizado: {len(self.token_ids)}")
+            raise ValueError(f"O dataset {split} está vazio após a divisão. "
+                             f"Verifique o tamanho do texto e o split_ratio.")
 
     def __len__(self):
         """
