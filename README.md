@@ -17,8 +17,8 @@ Nexus é um modelo de linguagem grande (LLM) pensado para **pesquisa acadêmica*
 - [Exemplos de Uso](#-exemplos-de-uso)
 - [Como Rodar (MVP)](#-como-rodar-mvp)
 - [Contribuições](#-contribuições)
-- [Licença & Ética](#-licença--ética)
-- [Contato](#-contato)
+- [Licença & Ética](##-licença--ética)
+- [Contato](##-contato)
 
 ---
 
@@ -98,6 +98,7 @@ Letra (refrão): 'No compasso do riso, teu braço é porto, na madrugada a conve
 ---
 
 ## 📥 Como Rodar (MVP)
+## 📥 Como Rodar (MVP)
 
 > Esses passos são um ponto de partida. Ajuste conforme a estrutura do teu repositório.
 
@@ -165,7 +166,6 @@ Fluxo sugerido:
 
 ## ⚖️ Licença & Ética
 
-Licença sugerida: MIT (arquivo LICENSE no repo).
 
 Política ética:
 
@@ -198,5 +198,5 @@ CONTRIBUTING.md, CODE_OF_CONDUCT.md
 
 ## ✉️ Contato
 
-Criado por Destro — https://github.com/Destro001400 
-Em desenvolvimento ***solo**
+Criado por Destro — https://github.com/Destro001400
+Este é um projeto **solo**.
