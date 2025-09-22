@@ -1,33 +1,53 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional
+import os
 
 # Inicializa a aplicação FastAPI
 app = FastAPI(
-    title="Nexus LLM API",
-    description="API para interagir com o Large Language Model Nexus.",
+    title="Nexus",
+    description="API e Chatbot para o Large Language Model Nexus.",
     version="0.1.0",
 )
 
-# Modelo de dados para a requisição
+# Monta o diretório 'static' para servir arquivos como CSS e JS
+app.mount("/static", StaticFiles(directory="api/static"), name="static")
+
+# Carrega o conteúdo do arquivo HTML
+html_path = "api/templates/index.html"
+with open(html_path, "r", encoding="utf-8") as f:
+    html_content = f.read()
+
+# Modelo de dados para a requisição da API
 class Query(BaseModel):
     prompt: str
     mode: str = "geral"  # Modos: geral, pesquisa, criativo, desenvolvimento
     max_tokens: Optional[int] = 256
     temperature: Optional[float] = 0.7
 
-# Modelo de dados para a resposta
+# Modelo de dados para a resposta da API
 class Response(BaseModel):
     text: str
     mode: str
     tokens_used: int
 
-@app.get("/", summary="Verificação de Status", description="Endpoint para verificar se a API está online.")
-async def read_root():
-    """
-    Endpoint raiz para verificar o status da API.
-    """
-    return {"status": "Nexus API is running"}
+@app.get("/")
+async def get():
+    return HTMLResponse(html_content)
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_text()
+            # Lógica de mock para a resposta do chatbot
+            response = f"Nexus responde: {data}"
+            await websocket.send_text(response)
+    except WebSocketDisconnect:
+        print("Cliente desconectado")
 
 @app.post("/generate", response_model=Response, summary="Geração de Texto", description="Gera texto com base em um prompt.")
 async def generate_text(query: Query):
