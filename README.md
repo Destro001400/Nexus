@@ -98,7 +98,6 @@ Letra (refrão): 'No compasso do riso, teu braço é porto, na madrugada a conve
 ---
 
 ## 📥 Como Rodar (MVP)
-## 📥 Como Rodar (MVP)
 
 > Esses passos são um ponto de partida. Ajuste conforme a estrutura do teu repositório.
 
@@ -199,4 +198,5 @@ CONTRIBUTING.md, CODE_OF_CONDUCT.md
 ## ✉️ Contato
 
 Criado por Destro — https://github.com/Destro001400
+
 Este é um projeto **solo**.
