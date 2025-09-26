@@ -12,13 +12,26 @@ GENIUS_ACCESS_TOKEN = "dga5f4cN5jNpm8RtBjbo3i8l48SKxCMqK2RNMRdQl0ap9D5CeeZnNrrK8
 # 2. Defina os artistas cujas músicas você quer baixar
 #    Pode ser um ou mais, separados por vírgula.
 #    Exemplo: ARTISTAS = ["Djavan", "Legião Urbana"]
-ARTISTAS = ["Djavan", "Legião Urbana", "Caetano Veloso", "Anitta", "Tom Jobim"]
+ARTISTAS = ["Djavan", "Legião Urbana", "Caetano Veloso", "Anitta", "Tom Jobim", "Marisa Monte",
+            "Chico Buarque", "Gilberto Gil", "Elis Regina", "Milton Nascimento", "Maria Bethânia",
+            "Cazuza", "Rita Lee", "Roberto Carlos", "Ivete Sangalo", "Lulu Santos", "Zeca Pagodinho",
+            "Fagner", "Gal Costa", "Jorge Ben Jor", "Ney Matogrosso", "Alceu Valença", "Lenine",
+            "Djonga", "Emicida", "Criolo", "Pabllo Vittar", "Letrux", "Liniker", "BaianaSystem", 
+            "Karol Conka", "Racionais MC's", "O Terno", "Boogarins", "Tulipa Ruiz", "Céu",
+            "Ana Cañas", "Marcelo D2", "Projota", "Vitão", "Duda Beat", "Luedji Luna",
+            "Xênia França", "Baco Exu do Blues", "Tuyo", "Francisco, el Hombre", "Matuê", "Jão",
+            "Caetano Veloso", "Gilberto Gil", "Anitta", "Chico Buarque", "Tom Jobim", "Elis Regina",
+            "Tarsila do Amaral", "Rita Lee", "Raul Seixas", "Jorge Ben Jor", "Milton Nascimento",
+            "Candido Portinari", "Marisa Monte", "Tim Maia", "Djavan", "Gal Costa", "Romero Britto",
+            "Vik Muniz", "Machado de Assis", "Clarice Lispector", "Elza Soares", "Lázaro Ramos",
+            "Fernanda Montenegro", "Seu Jorge", "Cazuza", "Maria Bethânia", "Lygia Clark",
+            "Hélio Oiticica", "Ivete Sangalo", "Zeca Pagodinho"]
 
 # 3. Defina o número máximo de músicas por artista
 MAX_SONGS_PER_ARTIST = 10
 
 # 4. Defina o nome do arquivo onde as letras serão salvas
-OUTPUT_FILENAME = "data.txt"
+OUTPUT_FILENAME = "datalyrics.txt"
 
 # -------------------------------------------------------------------------
 # --- CÓDIGO DE COLETA - NÃO PRECISA ALTERAR ---
