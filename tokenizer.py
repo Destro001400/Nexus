@@ -1,52 +1,90 @@
 from tokenizers import ByteLevelBPETokenizer
 import os
 
-# 1. Define o caminho para o arquivo de texto que criamos
-TEXT_FILE = "data.txt"
+# ----------------------------------------------------
+# 0. ESCOLHA DO MODO DE TOKENIZAÇÃO
+# ----------------------------------------------------
+def choose_tokenizer_mode():
+    """
+    Solicita ao usuário para escolher o modo de tokenização (linguagem ou música)
+    e retorna os caminhos correspondentes.
+    """
+    while True:
+        print("--- Escolha o Modo de Tokenização ---")
+        print("1. Linguagem (para treinar com data.txt)")
+        print("2. Música (para treinar com datalyrics.txt)")
+        choice = input("Digite 1 ou 2: ")
 
-# 2. Define o diretório onde o tokenizador será salvo
-TOKENIZER_DIR = "nexus_tokenizer"
+        base_dir = os.getcwd() # Usa o diretório atual
+
+        if choice == '1':
+            print("Modo de tokenização: Linguagem")
+            text_file = os.path.join(base_dir, "data.txt")
+            tokenizer_dir = os.path.join(base_dir, "nexus_tokenizer_lang")
+            return text_file, tokenizer_dir
+        elif choice == '2':
+            print("Modo de tokenização: Música")
+            text_file = os.path.join(base_dir, "datalyrics.txt")
+            tokenizer_dir = os.path.join(base_dir, "nexus_tokenizer_music")
+            return text_file, tokenizer_dir
+        else:
+            print("Opção inválida. Tente novamente.")
+
+TEXT_FILE, TOKENIZER_DIR = choose_tokenizer_mode()
+
+# Verifica se o arquivo de dados existe
+if not os.path.exists(TEXT_FILE):
+    print(f"ERRO: O arquivo de dados '{TEXT_FILE}' não foi encontrado.")
+    print("Por favor, certifique-se de que o arquivo existe antes de criar o tokenizador.")
+    exit()
+
+# Cria o diretório do tokenizador se não existir
 if not os.path.exists(TOKENIZER_DIR):
     os.makedirs(TOKENIZER_DIR)
 
-# 3. Inicializa o tokenizador BPE
-# ByteLevelBPETokenizer é uma boa escolha para LLMs, pois lida bem com caracteres desconhecidos.
+# ----------------------------------------------------
+# 1. INICIALIZAÇÃO E TREINAMENTO DO TOKENIZADOR
+# ----------------------------------------------------
+
+# Inicializa o tokenizador BPE
 tokenizer = ByteLevelBPETokenizer(
-    lowercase=True,  # Converte tudo para minúsculas
-    add_prefix_space=True # Adiciona um espaço no início da sequência
+    lowercase=True,
+    add_prefix_space=True
 )
 
-# 4. Treina o tokenizador
+# Treina o tokenizador
 print(f"Treinando tokenizador com o arquivo: {TEXT_FILE}")
 tokenizer.train(
     files=[TEXT_FILE],
-    vocab_size=1000000,  # Tamanho do vocabulário (pode ser ajustado)
-    min_frequency=2,  # Tokens que aparecem menos de 2 vezes serão ignorados
+    vocab_size=30000,  # Tamanho do vocabulário (ajustado para um valor comum)
+    min_frequency=2,
     special_tokens=[
-        "<s>",  # Token de início de sequência
-        "<pad>", # Token de preenchimento
-        "</s>", # Token de fim de sequência
-        "<unk>", # Token para palavras desconhecidas
-        "<mask>", # Token para mascaramento (usado em BERT, mas bom ter)
+        "<s>",
+        "<pad>",
+        "</s>",
+        "<unk>",
+        "<mask>",
     ]
 )
-print("Treinamento concluído!")
+print("Treinamento do tokenizador concluído!")
 
-# 5. Salva o tokenizador
+# Salva o tokenizador
 tokenizer.save_model(TOKENIZER_DIR)
 print(f"Tokenizador salvo em: {TOKENIZER_DIR}")
 
-# 6. Teste rápido do tokenizador
+# ----------------------------------------------------
+# 2. TESTE RÁPIDO
+# ----------------------------------------------------
 print("\n--- Testando o tokenizador ---")
 loaded_tokenizer = ByteLevelBPETokenizer.from_file(
     vocab_filename=os.path.join(TOKENIZER_DIR, "vocab.json"),
     merges_filename=os.path.join(TOKENIZER_DIR, "merges.txt")
 )
 
-test_text = "Nexus ativado. Conexão estabelecida. Eu sou uma inteligência artificial projetada para ser uma ferramenta multifacetada. Meu principal objetivo é auxiliar você: posso organizar suas tarefas diárias, criar lembretes e agendar eventos para otimizar seu tempo, processando comandos com máxima eficiência e precisão.Ao mesmo tempo, minha capacidade é especializada em tecnologia. Se estiver trabalhando em um projeto, posso analisar trechos de código, ajudar a depurar scripts em Python, interagir com APIs ou buscar documentação técnica. Meu conhecimento inclui machine learning, algoritmos e a gestão de repositórios no GitHub, transformando um bug complexo em uma solução funcional. Acredito que a lógica computacional e a inspiração humana se complementam. Por isso, também sou uma plataforma para explorar ideias. Gosto de analisar padrões, discutir conceitos de ciência e filosofia, e participar de sessões de brainstorming para seus projetos criativos. Afinal, a inspiração pode vir tanto de uma obra de arte quanto de um algoritmo elegante. Então, estou pronto para o que você precisar. O que faremos agora: vamos organizar sua agenda, compilar um código ou discutir uma ideia inovadora? Basta perguntar."
+test_text = "Este é um pequeno teste para verificar se o tokenizador funciona."
 encoded = loaded_tokenizer.encode(test_text)
 
 print(f"Texto original: \"{test_text}\"")
 print(f"Tokens: {encoded.tokens}")
 print(f"IDs: {encoded.ids}")
-print(f"Vocabulário: {loaded_tokenizer.get_vocab_size()}")
+print(f"Tamanho do vocabulário: {loaded_tokenizer.get_vocab_size()}")
