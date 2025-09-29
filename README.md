@@ -199,4 +199,13 @@ CONTRIBUTING.md, CODE_OF_CONDUCT.md
 
 Criado por Destro — https://github.com/Destro001400
 
-Este é um projeto **solo**.
+Instagram - https://www.instagram.com/guilherme_destr0?igsh=NWp6c25hNmlxbmN2
+
+Telegram - t.me/Destro01400
+
+Canal do Telegram - https://t.me/nexus_ia
+
+---
+
+
+# Este é um projeto atualmente **solo**.
