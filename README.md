@@ -201,7 +201,7 @@ Criado por Destro — https://github.com/Destro001400
 
 Instagram - https://www.instagram.com/guilherme_destr0?igsh=NWp6c25hNmlxbmN2
 
-Telegram - t.me/Destro01400
+Telegram - https://t.me/Destro01400
 
 Canal do Telegram - https://t.me/nexus_ia
 
